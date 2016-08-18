@@ -12,7 +12,7 @@ Don't touch is a browser game. The goal of the game is for the player to follow 
 
 ## Technologies, Libraries, APIs
 
-This project should only require vanilla JS and HTML.
+This project only require vanilla JS and HTML.
 
 ## Wireframes
 
@@ -26,8 +26,8 @@ This project should only require vanilla JS and HTML.
 
 **Objective:** Set up cursor detection
 
-- [ ] track cursor location
-- [ ] stylistically replace traditional cursor with a red dot.
+- [x] track cursor location
+- [x] stylistically replace traditional cursor with a red dot.
 - [ ] render score on the corner of the frame.
 
 ### Phase 2: Generate Path

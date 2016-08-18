@@ -1,0 +1,24 @@
+{
+  "name": "dont-touch",
+  "version": "1.0.0",
+  "description": "## Minimum Viable Product",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maestromac/dont-touch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maestromac/dont-touch/issues"
+  },
+  "homepage": "https://github.com/maestromac/dont-touch#readme"
+}

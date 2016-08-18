@@ -1,0 +1,9 @@
+
+
+canvas {
+  background: #eee;
+  display: block;
+  margin: 100px auto;
+  cursor: none;
+  border: 1px solid black;
+}
