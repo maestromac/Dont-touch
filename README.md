@@ -34,9 +34,9 @@ This project only require vanilla JS and HTML.
 
 **Objective:** Set up the moving path/maze.
 
-- [ ] set up a block-like maze path
-- [ ] maze path should be falling down.
-- [ ] create an algorithm to automatically generate path base on the seconds player lasted.
+- [x] set up a block-like maze path
+- [x] maze path should be falling down.
+- [x] create an algorithm to automatically generate path base on the seconds player lasted.
 
 ### Phase 3: Complete project
 
