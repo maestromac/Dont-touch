@@ -28,7 +28,7 @@ This project only require vanilla JS and HTML.
 
 - [x] track cursor location
 - [x] stylistically replace traditional cursor with a red dot.
-- [ ] render score on the corner of the frame.
+- [x] render score on the corner of the frame.
 
 ### Phase 2: Generate Path
 
@@ -42,6 +42,6 @@ This project only require vanilla JS and HTML.
 
 **Objective:** Set up intro start page and end page.
 
-- [ ] create a intro page.
-- [ ] render final score page, and play again.
+- [x] create a intro page.
+- [x] render final score page, and play again.
 - [ ] create a ranking score board.
