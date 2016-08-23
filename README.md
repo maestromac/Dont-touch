@@ -69,5 +69,5 @@ Obstacle are stored in an array and will automatically be removed once they are 
 
 ## Future Features
 
-[ ] automatically adjust difficulty base on player's score.
-[ ] store record of highest scores and user name.
+- [ ] automatically adjust difficulty base on player's score.
+- [ ] store record of highest scores and user name.
