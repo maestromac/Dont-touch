@@ -50,17 +50,13 @@
 	var Obstacle = __webpack_require__(3);
 	var Util = __webpack_require__(2);
 	
-<<<<<<< HEAD
 	var colorsIdx = 0;
 	var colorsLength = Util.colors.length;
 	
-=======
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
 	var x = canvas.width / 2;
 	var y = canvas.height / 2;
-<<<<<<< HEAD
 	var ballRadius = 12;
 	
 	var level = 1;
@@ -72,9 +68,6 @@
 	  color: Util.colors[colorsIdx % colorsLength],
 	  m: 7
 	};
-=======
-	var ballRadius = 5;
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	
 	var interval1 = void 0;
 	var interval2 = void 0;
@@ -86,18 +79,13 @@
 	var menuCallback = void 0;
 	
 	function Game() {
-<<<<<<< HEAD
 	  this.cursor = new Cursor(x, y, ballRadius, 100);
-=======
-	  this.cursor = new Cursor(x, y, ballRadius);
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	  this.score = 0;
 	  this.status = "intro";
 	  this.obstacles = [];
 	}
 	
 	Game.prototype.generateObstacle = function () {
-<<<<<<< HEAD
 	  this.obstacles.push(new Obstacle(difficulty.gap, difficulty.gapLocation, difficulty.dy, difficulty.height, difficulty.color, difficulty.m));
 	  colorsIdx += 1;
 	  if (level < 10) {
@@ -131,12 +119,6 @@
 	  };
 	};
 	
-=======
-	  this.obstacles.push(new Obstacle(Util.fairRandom(0.2 * canvas.width, 70), Util.fairRandom(canvas.width), 1, Util.fairRandom(200, 50)));
-	  this.removeObstacle();
-	};
-	
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	Game.prototype.removeObstacle = function () {
 	  var target = this.obstacles[0].inFrame() ? undefined : 0;
 	
@@ -206,7 +188,6 @@
 	Game.prototype.renderMenu = function () {
 	  menuCallback = this.checkMenu.bind(this);
 	  canvas.addEventListener("click", menuCallback);
-<<<<<<< HEAD
 	  ctx.font = "Bold 70px San Serif";
 	  ctx.fillStyle = "#000000";
 	  // ctx.fillText("DON'T TOUCH", 250, 150);
@@ -217,11 +198,6 @@
 	  ctx.fillText(text, 252, 150);
 	  ctx.fillStyle = "#000";
 	  ctx.fillText(text, 250, 150);
-=======
-	  ctx.font = "70px Arial";
-	  ctx.fillStyle = "#000000";
-	  var temp = ctx.fillText("Don't Touch!!", 250, 150);
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	
 	  ctx.font = "30px Arial";
 	  ctx.fillText("How to play: ", 250, 220);
@@ -280,19 +256,12 @@
 	var ctx = canvas.getContext("2d");
 	var rect = canvas.getBoundingClientRect();
 	
-<<<<<<< HEAD
 	function Cursor(x, y, r, maxCursors) {
 	  this.x = x;
 	  this.y = y;
 	  this.r = r;
 	  this.maxCursors = maxCursors;
 	  this.positions = [];
-=======
-	function Cursor(x, y, r) {
-	  this.x = x;
-	  this.y = y;
-	  this.r = r;
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	  document.addEventListener("mousemove", this.mouseMoveHandler.bind(this), false);
 	}
 	
@@ -303,7 +272,6 @@
 	  // console.log(`${this.x}, ${this.y}`);
 	};
 	
-<<<<<<< HEAD
 	Cursor.prototype.draw = function () {
 	  for (var i = 0; i < this.positions.length; i++) {
 	    var ratio = (i + 1) / this.positions.length;
@@ -323,14 +291,6 @@
 	  // ctx.strokeStyle = "#8000FF";
 	  // ctx.stroke();
 	  this.storeLastPosition(this.x, this.y);
-=======
-	Cursor.prototype.drawBall = function () {
-	  ctx.beginPath();
-	  ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-	  ctx.fillStyle = "#990000";
-	  ctx.fill();
-	  ctx.closePath();
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	};
 	
 	Cursor.prototype.outOfFrame = function () {
@@ -343,16 +303,11 @@
 	  return false;
 	};
 	
-<<<<<<< HEAD
 	Cursor.prototype.storeLastPosition = function (x, y) {
 	  this.positions.push({ x: x, y: y });
 	  if (this.positions.length > this.maxCursors) {
 	    this.positions.shift();
 	  }
-=======
-	Cursor.prototype.draw = function () {
-	  this.drawBall();
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	};
 	
 	module.exports = Cursor;
@@ -361,11 +316,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-<<<<<<< HEAD
 	'use strict';
-=======
-	"use strict";
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	
 	var Util = {
 	  getMousePos: function getMousePos(rect, e) {
@@ -402,7 +353,6 @@
 	    var dx = distX - rect.w / 2;
 	    var dy = distY - rect.h / 2;
 	    return dx * dx + dy * dy <= circle.r * circle.r;
-<<<<<<< HEAD
 	  },
 	  getRndColor: function getRndColor(transparent) {
 	    var r = Math.floor(Math.random() * 255);
@@ -414,9 +364,6 @@
 	
 	  colors: ["#64cac7", "#68babd", "#6daab2", "#719aa8", "#758a9d", "#797a93", "#7e6a88", "#825a7e", "#864a74", "#8a3a69", "#8e2a5f", "#931a54", "#970a4a", "#931a54", "#8e2a5f", "#8a3a69", "#864a74", "#825a7e", "#7e6a88", "#797a93", "#758a9d", "#719aa8", "#6daab2", "#68babd"]
 	
-=======
-	  }
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	};
 	
 	module.exports = Util;
@@ -435,34 +382,22 @@
 	var blockLeftCenter = void 0;
 	var blockRightCenter = void 0;
 	
-<<<<<<< HEAD
 	function Obstacle(gap, gapLocation, dy, height, color, m) {
-=======
-	function Obstacle(gap, gapLocation, dy, height) {
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	  this.gap = gap;
 	  this.gapLocation = gapLocation + gap > canvas.width ? canvas.width - gap : gapLocation;
 	
 	  if (this.gapLocation === 0) {
 	    blockRightCenter = this.gap;
 	  } else if (this.gapLocation === canvas.width) {
-<<<<<<< HEAD
 	    // blockLeftCenter = 0;
 	    blockLeftCenter = 0 - this.gapLocation;
 	  } else {
 	    // blockLeftCenter = 0;
 	    blockLeftCenter = 0 - this.gapLocation;
-=======
-	    // this.gapLocation -= this.gap;
-	    blockLeftCenter = 0;
-	  } else {
-	    blockLeftCenter = 0;
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	    blockRightCenter = this.gap + this.gapLocation;
 	  }
 	
 	  if (blockLeftCenter || blockLeftCenter === 0) {
-<<<<<<< HEAD
 	    this.blockLeft = new Block(blockLeftCenter, dy, this.gapLocation, height, color, m);
 	  }
 	
@@ -470,13 +405,6 @@
 	    this.blockRight = new Block(
 	    // blockRightCenter, dy, canvas.width - blockRightCenter, height
 	    canvas.width, dy, canvas.width - blockRightCenter, height, color, m, blockRightCenter);
-=======
-	    this.blockLeft = new Block(blockLeftCenter, dy, this.gapLocation, height);
-	  }
-	
-	  if (blockRightCenter || blockRightCenter === 0) {
-	    this.blockRight = new Block(blockRightCenter, dy, canvas.width - blockRightCenter, height);
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	  }
 	}
 	
@@ -518,7 +446,6 @@
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
 	var rect = canvas.getBoundingClientRect();
-<<<<<<< HEAD
 	function Block(x, dy, w, h, color, m, tx) {
 	  // tx is target x
 	  // m is dx multiplier
@@ -530,21 +457,11 @@
 	  this.tx = tx;
 	  this.dx = w / canvas.width * m;
 	  this.color = color;
-=======
-	
-	function Block(x, dy, w, h) {
-	  this.x = x;
-	  this.y = -300;
-	  this.dy = dy;
-	  this.w = w;
-	  this.h = h;
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	  this.inFrame = true;
 	}
 	
 	Block.prototype.draw = function () {
 	  ctx.beginPath();
-<<<<<<< HEAD
 	  if (this.x < 0) {
 	    ctx.rect(this.x, this.y, this.w, this.h);
 	    ctx.fillStyle = this.color;
@@ -568,15 +485,6 @@
 	    if (this.y === canvas.height) {
 	      this.inFrame = false;
 	    }
-=======
-	  ctx.rect(this.x, this.y, this.w, this.h);
-	  ctx.fillStyle = "#0095DD";
-	  ctx.fill();
-	  ctx.closePath();
-	  this.y += this.dy;
-	  if (this.y === canvas.height) {
-	    this.inFrame = false;
->>>>>>> 4f2170139f5cd56092d7c40342d8ceece2b76717
 	  }
 	};
 	
