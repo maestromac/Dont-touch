@@ -55,9 +55,11 @@
 	
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
+	// canvas.width =  "1002";
+	// canvas.height =  "800";
 	var x = canvas.width / 2;
 	var y = canvas.height / 2;
-	var ballRadius = 12;
+	var ballRadius = 10;
 	
 	var level = 1;
 	var difficulty = {
@@ -79,7 +81,7 @@
 	var menuCallback = void 0;
 	
 	function Game() {
-	  this.cursor = new Cursor(x, y, ballRadius, 100);
+	  this.cursor = new Cursor(x, y, ballRadius, 40);
 	  this.score = 0;
 	  this.status = "intro";
 	  this.obstacles = [];
@@ -91,7 +93,6 @@
 	  if (level < 10) {
 	    this.raiseDifficulty();
 	  } else {
-	    // max level reached
 	    this.sustainDifficulty();
 	  }
 	  this.removeObstacle();
@@ -121,7 +122,6 @@
 	
 	Game.prototype.removeObstacle = function () {
 	  var target = this.obstacles[0].inFrame() ? undefined : 0;
-	
 	  if (target === 0) {
 	    this.obstacles.splice(target, 1);
 	  }
