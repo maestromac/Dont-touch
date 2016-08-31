@@ -49,15 +49,13 @@
 	var Cursor = __webpack_require__(1);
 	var Obstacle = __webpack_require__(3);
 	var Util = __webpack_require__(2);
-	var MenuBlocks = __webpack_require__(6);
+	var MenuBlocks = __webpack_require__(5);
 	
 	var colorsIdx = 0;
 	var colorsLength = Util.colors.length;
 	
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
-	// canvas.width =  "1002";
-	// canvas.height =  "800";
 	var x = canvas.width / 2;
 	var y = canvas.height / 2;
 	var ballRadius = 8;
@@ -77,6 +75,7 @@
 	var interval3 = void 0;
 	var menuInterval = void 0;
 	var blackInterval = void 0;
+	var scoreInterval = void 0;
 	
 	var mouseClickListener = void 0;
 	var listenerCount = 0;
@@ -89,7 +88,7 @@
 	  this.status = "intro";
 	  this.obstacles = [];
 	  this.menuBlocks = new MenuBlocks(13, 4);
-	  this.blackBlocks = new MenuBlocks(13, 10, true);
+	  this.blackBlocks = new MenuBlocks(13, 4, true);
 	}
 	
 	Game.prototype.generateObstacle = function () {
@@ -144,16 +143,18 @@
 	};
 	
 	Game.prototype.gameOver = function () {
+	  var _this = this;
+	
 	  canvas.style.cursor = 'default';
 	  this.status = 'gameOver';
 	  clearInterval(interval1);
 	  clearInterval(interval2);
 	  clearInterval(interval3);
 	  // ctx.clearRect(0, 0, canvas.width, canvas.height);
-	  this.renderResult();
-	
-	  retryCallback = this.checkRetry.bind(this);
-	  canvas.addEventListener("click", retryCallback);
+	  this.scoreBlocks = new MenuBlocks(13, 20);
+	  Util.sleep(450).then(function () {
+	    scoreInterval = setInterval(_this.drawScoreBlocks.bind(_this), 2);
+	  });
 	};
 	
 	Game.prototype.checkRetry = function (e) {
@@ -161,36 +162,30 @@
 	  var yRetry = this.cursor.y <= canvas.height && this.cursor.y >= 0;
 	  if (xRetry && yRetry) {
 	    canvas.removeEventListener("click", retryCallback);
+	    this.blackBlocks = new MenuBlocks(13, 10, true);
+	    this.cursor = new Cursor(x, y, ballRadius, 40);
 	    this.score = 0;
 	    this.obstacles = [];
-	    this.start();
+	    blackInterval = setInterval(this.drawBlackBlocks.bind(this), 2);
 	  }
 	};
 	Game.prototype.checkMenu = function (e) {
-	  var xRetry = this.cursor.x <= canvas.width && this.cursor.x >= 0;
-	  var yRetry = this.cursor.y <= canvas.height && this.cursor.y >= 0;
-	  if (xRetry && yRetry) {
+	  var xFrame = this.cursor.x <= canvas.width && this.cursor.x >= 0;
+	  var yFrame = this.cursor.y <= canvas.height && this.cursor.y >= 0;
+	  if (xFrame && yFrame) {
 	    canvas.removeEventListener("click", menuCallback);
 	    this.score = 0;
 	    this.obstacles = [];
-	    this.start();
-	    // blackInterval = setInterval(this.drawBlackBlocks.bind(this), 2);
+	    blackInterval = setInterval(this.drawBlackBlocks.bind(this), 2);
 	  }
 	};
 	
 	Game.prototype.renderResult = function () {
-	  ctx.font = "70px Arial";
-	  ctx.fillStyle = "#000000";
-	  this.lostLogo();
-	  // let temp =ctx.fillText("You Lost !!", 300, 250);
-	
-	  ctx.font = "40px Arial";
-	  ctx.fillText("You scored: " + this.score, 310, 320);
-	
-	  ctx.fillStyle = "#0095DD";
-	  ctx.font = "40px Arial";
-	
-	  ctx.fillText("Click to retry", 310, 430);
+	  this.scoreLogo(150, 150);
+	  ctx.font = "70px serif";
+	  ctx.fillStyle = "white";
+	  ctx.fillText(this.score, 580, 220);
+	  this.retryLogo();
 	};
 	
 	Game.prototype.drawMenuBlocks = function () {
@@ -206,6 +201,20 @@
 	
 	Game.prototype.drawBlackBlocks = function () {
 	  this.blackBlocks.draw();
+	  if (this.blackBlocks.done) {
+	    clearInterval(blackInterval);
+	    this.start();
+	  }
+	};
+	
+	Game.prototype.drawScoreBlocks = function () {
+	  this.scoreBlocks.draw();
+	  if (this.scoreBlocks.done) {
+	    clearInterval(scoreInterval);
+	    this.renderResult();
+	    retryCallback = this.checkRetry.bind(this);
+	    canvas.addEventListener("click", retryCallback);
+	  }
 	};
 	
 	Game.prototype.renderMenu = function () {
@@ -226,7 +235,15 @@
 	  var logo = new Image();
 	  logo.src = './assets/images/logo.png';
 	  logo.onload = function () {
-	    ctx.drawImage(logo, 200, 100);
+	    ctx.drawImage(logo, 110, 100);
+	  };
+	};
+	
+	Game.prototype.scoreLogo = function (x, y) {
+	  var logo = new Image();
+	  logo.src = './assets/images/score.png';
+	  logo.onload = function () {
+	    ctx.drawImage(logo, x, y);
 	  };
 	};
 	
@@ -234,19 +251,26 @@
 	  var logo = new Image();
 	  logo.src = './assets/images/start.png';
 	  logo.onload = function () {
-	    ctx.drawImage(logo, 220, 350);
+	    ctx.drawImage(logo, 300, 350);
 	  };
 	};
 	Game.prototype.lostLogo = function () {
 	  var logo = new Image();
 	  logo.src = './assets/images/lost.png';
 	  logo.onload = function () {
-	    ctx.drawImage(logo, 300, 200);
+	    ctx.drawImage(logo, 180, 100);
+	  };
+	};
+	Game.prototype.retryLogo = function () {
+	  var logo = new Image();
+	  logo.src = './assets/images/retry.png';
+	  logo.onload = function () {
+	    ctx.drawImage(logo, 330, 350);
 	  };
 	};
 	
 	Game.prototype.inProgress = function () {
-	  var _this = this;
+	  var _this2 = this;
 	
 	  ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
@@ -260,10 +284,12 @@
 	    this.gameOver();
 	  }
 	  this.obstacles.forEach(function (obs) {
-	    if (obs.detectCollision(_this.cursor)) {
-	      _this.gameOver();
+	    if (obs.detectCollision(_this2.cursor)) {
+	      _this2.gameOver();
 	    }
 	  });
+	
+	  // draw score last to maintain score on top
 	  this.drawScore();
 	};
 	
@@ -537,8 +563,7 @@
 	module.exports = Block;
 
 /***/ },
-/* 5 */,
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -551,22 +576,22 @@
 	
 	var colorsLength = Util.colors.length;
 	var colorsIdx = Math.floor(Math.random() * (colorsLength - 1));
-	var yCoord = 0;
 	
 	function MenuBlocks(num, speed, black) {
+	  this.yCoord = 0;
 	  this.height = canvas.height / num;
 	  this.color = Util.colors[colorsIdx % colorsLength];
 	  this.obstacles = [];
 	  if (black === true) {
-	    this.color = '#111111';
+	    this.color = "#111111";
 	  }
 	  for (var i = 0; i < num; i++) {
-	    this.obstacles.push(new Obstacle(0, Util.fairRandom(canvas.width), 0, this.height, this.color, speed, yCoord));
+	    this.obstacles.push(new Obstacle(0, Util.fairRandom(canvas.width), 0, this.height, this.color, speed, this.yCoord));
 	    if (black === undefined) {
 	      colorsIdx += 1;
 	      this.color = Util.colors[colorsIdx % colorsLength];
 	    }
-	    yCoord += this.height;
+	    this.yCoord += this.height;
 	  }
 	  this.done = false;
 	}
