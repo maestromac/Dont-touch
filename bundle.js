@@ -59,14 +59,14 @@
 	// canvas.height =  "800";
 	var x = canvas.width / 2;
 	var y = canvas.height / 2;
-	var ballRadius = 10;
+	var ballRadius = 8;
 	
 	var level = 1;
 	var difficulty = {
-	  gap: Util.fairRandom(0.2 * canvas.width, 70),
+	  gap: Util.fairRandom(0.23 * canvas.width, 0.23 * canvas.width),
 	  gapLocation: Util.fairRandom(canvas.width),
-	  dy: 1,
-	  height: Util.fairRandom(150, 50),
+	  dy: 0.7,
+	  height: Util.fairRandom(40, 40),
 	  color: Util.colors[colorsIdx % colorsLength],
 	  m: 7
 	};
@@ -100,10 +100,10 @@
 	
 	Game.prototype.raiseDifficulty = function () {
 	  difficulty = {
-	    gap: Util.fairRandom(0.2 * canvas.width, 70),
+	    gap: Util.fairRandom(0.23 * canvas.width, 0.23 * canvas.width),
 	    gapLocation: Util.fairRandom(canvas.width),
-	    dy: 1,
-	    height: Util.fairRandom(150, 50),
+	    dy: 0.7,
+	    height: Util.fairRandom(40, 40),
 	    color: Util.colors[colorsIdx % colorsLength],
 	    m: 7
 	  };
@@ -128,8 +128,9 @@
 	};
 	
 	Game.prototype.drawScore = function () {
-	  ctx.font = "23px Arial";
-	  ctx.fillStyle = "#000000";
+	  // ctx.font = "lighter 23px sans-serif";
+	  ctx.font = "small-caps bold 20px arial";
+	  ctx.fillStyle = "white";
 	  ctx.fillText("Score: " + this.score, 50, 50);
 	};
 	
@@ -143,7 +144,7 @@
 	  clearInterval(interval1);
 	  clearInterval(interval2);
 	  clearInterval(interval3);
-	  ctx.clearRect(0, 0, canvas.width, canvas.height);
+	  // ctx.clearRect(0, 0, canvas.width, canvas.height);
 	  this.renderResult();
 	
 	  retryCallback = this.checkRetry.bind(this);
@@ -182,7 +183,7 @@
 	  ctx.fillStyle = "#0095DD";
 	  ctx.font = "40px Arial";
 	
-	  ctx.fillText("Play again", 310, 430);
+	  ctx.fillText("Click to retry", 310, 430);
 	};
 	
 	Game.prototype.renderMenu = function () {
@@ -219,7 +220,6 @@
 	  this.obstacles.forEach(function (obs) {
 	    obs.draw();
 	  });
-	  this.drawScore();
 	  this.cursor.draw();
 	
 	  // check for lose conditions
@@ -231,18 +231,20 @@
 	      _this.gameOver();
 	    }
 	  });
+	  this.drawScore();
 	};
 	
 	Game.prototype.start = function () {
 	  canvas.style.cursor = 'none';
 	  this.status = 'inProgress';
-	  interval1 = setInterval(this.generateObstacle.bind(this), 1000);
+	  interval1 = setInterval(this.generateObstacle.bind(this), 700);
 	  interval2 = setInterval(this.inProgress.bind(this), 2);
 	  interval3 = setInterval(this.tickScore.bind(this), 100);
 	};
 	
 	var game = new Game();
 	game.renderMenu();
+	// game.start();
 
 /***/ },
 /* 1 */
@@ -275,16 +277,15 @@
 	Cursor.prototype.draw = function () {
 	  for (var i = 0; i < this.positions.length; i++) {
 	    var ratio = (i + 1) / this.positions.length;
-	    ctx.globalCompositeOperation = "lighter";
 	    ctx.beginPath();
 	    ctx.arc(this.positions[i].x, this.positions[i].y, ratio * this.r, 0, Math.PI * 2);
-	    ctx.fillStyle = "rgba(77, 0, 0, " + 1 + ")";
+	    ctx.fillStyle = "rgba(181,18,18, " + 1 + ")";
 	    // ctx.fillStyle = Util.getRndColor(ratio/2);
 	    ctx.fill();
 	  }
 	  ctx.beginPath();
 	  ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-	  ctx.fillStyle = "rgb(77, 0, 0)";
+	  ctx.fillStyle = "rgb(181,18,18)";
 	  ctx.fill();
 	  ctx.closePath();
 	  // ctx.lineWidth = this.r/2;
@@ -469,12 +470,18 @@
 	    ctx.fill();
 	    ctx.closePath();
 	    this.x += this.dx;
+	    if (this.x > 0) {
+	      this.x = 0;
+	    }
 	  } else if (this.tx && this.x > this.tx) {
 	    ctx.rect(this.x, this.y, this.w, this.h);
 	    ctx.fillStyle = this.color;
 	    ctx.fill();
 	    ctx.closePath();
 	    this.x -= this.dx;
+	    if (this.x < this.tx) {
+	      this.x = this.tx;
+	    }
 	  } else {
 	    ctx.rect(this.x, this.y, this.w, this.h);
 	    ctx.fillStyle = this.color;
