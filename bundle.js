@@ -49,6 +49,7 @@
 	var Cursor = __webpack_require__(1);
 	var Obstacle = __webpack_require__(3);
 	var Util = __webpack_require__(2);
+	var MenuBlocks = __webpack_require__(6);
 	
 	var colorsIdx = 0;
 	var colorsLength = Util.colors.length;
@@ -74,6 +75,8 @@
 	var interval1 = void 0;
 	var interval2 = void 0;
 	var interval3 = void 0;
+	var menuInterval = void 0;
+	var blackInterval = void 0;
 	
 	var mouseClickListener = void 0;
 	var listenerCount = 0;
@@ -85,6 +88,8 @@
 	  this.score = 0;
 	  this.status = "intro";
 	  this.obstacles = [];
+	  this.menuBlocks = new MenuBlocks(13, 4);
+	  this.blackBlocks = new MenuBlocks(13, 10, true);
 	}
 	
 	Game.prototype.generateObstacle = function () {
@@ -152,8 +157,8 @@
 	};
 	
 	Game.prototype.checkRetry = function (e) {
-	  var xRetry = this.cursor.x <= 500 && this.cursor.x >= 310;
-	  var yRetry = this.cursor.y <= 435 && this.cursor.y >= 400;
+	  var xRetry = this.cursor.x <= canvas.width && this.cursor.x >= 0;
+	  var yRetry = this.cursor.y <= canvas.height && this.cursor.y >= 0;
 	  if (xRetry && yRetry) {
 	    canvas.removeEventListener("click", retryCallback);
 	    this.score = 0;
@@ -162,20 +167,22 @@
 	  }
 	};
 	Game.prototype.checkMenu = function (e) {
-	  var xRetry = this.cursor.x <= 500 && this.cursor.x >= 310;
-	  var yRetry = this.cursor.y <= 435 && this.cursor.y >= 400;
+	  var xRetry = this.cursor.x <= canvas.width && this.cursor.x >= 0;
+	  var yRetry = this.cursor.y <= canvas.height && this.cursor.y >= 0;
 	  if (xRetry && yRetry) {
 	    canvas.removeEventListener("click", menuCallback);
 	    this.score = 0;
 	    this.obstacles = [];
 	    this.start();
+	    // blackInterval = setInterval(this.drawBlackBlocks.bind(this), 2);
 	  }
 	};
 	
 	Game.prototype.renderResult = function () {
 	  ctx.font = "70px Arial";
 	  ctx.fillStyle = "#000000";
-	  var temp = ctx.fillText("You Lost !!", 300, 250);
+	  this.lostLogo();
+	  // let temp =ctx.fillText("You Lost !!", 300, 250);
 	
 	  ctx.font = "40px Arial";
 	  ctx.fillText("You scored: " + this.score, 310, 320);
@@ -186,30 +193,56 @@
 	  ctx.fillText("Click to retry", 310, 430);
 	};
 	
+	Game.prototype.drawMenuBlocks = function () {
+	  this.menuBlocks.draw();
+	  if (this.menuBlocks.done) {
+	    clearInterval(menuInterval);
+	    menuCallback = this.checkMenu.bind(this);
+	    canvas.addEventListener("click", menuCallback);
+	    this.logo();
+	    this.startButton();
+	  }
+	};
+	
+	Game.prototype.drawBlackBlocks = function () {
+	  this.blackBlocks.draw();
+	};
+	
 	Game.prototype.renderMenu = function () {
-	  menuCallback = this.checkMenu.bind(this);
-	  canvas.addEventListener("click", menuCallback);
-	  ctx.font = "Bold 70px San Serif";
-	  ctx.fillStyle = "#000000";
-	  // ctx.fillText("DON'T TOUCH", 250, 150);
-	  var text = "DON'T TOUCH";
-	  ctx.fillStyle = "red";
-	  ctx.fillText(text, 247, 150);
-	  ctx.fillStyle = "cyan";
-	  ctx.fillText(text, 252, 150);
-	  ctx.fillStyle = "#000";
-	  ctx.fillText(text, 250, 150);
+	  menuInterval = setInterval(this.drawMenuBlocks.bind(this), 2);
+	  // if (this.menuBlocks.done) {
+	  //
+	  // }
+	  // ctx.font = "Bold 70px San Serif";
+	  // ctx.fillStyle = "white";
+	  // ctx.font = "30px Arial";
+	  // ctx.fillText("How to play: ", 250, 220);
+	  // ctx.font = "25px Arial";
+	  // ctx.fillText("1: keep your cursor in the frame", 260, 260);
+	  // ctx.fillText("2: Avoid the falling bars", 260, 300);
+	};
 	
-	  ctx.font = "30px Arial";
-	  ctx.fillText("How to play: ", 250, 220);
-	  ctx.font = "25px Arial";
-	  ctx.fillText("1: keep your cursor in the frame", 260, 260);
-	  ctx.fillText("2: Avoid the falling bars", 260, 300);
+	Game.prototype.logo = function () {
+	  var logo = new Image();
+	  logo.src = './assets/images/logo.png';
+	  logo.onload = function () {
+	    ctx.drawImage(logo, 200, 100);
+	  };
+	};
 	
-	  ctx.fillStyle = "#0095DD";
-	  ctx.font = "50px Arial";
-	
-	  ctx.fillText("Start!", 310, 430);
+	Game.prototype.startButton = function () {
+	  var logo = new Image();
+	  logo.src = './assets/images/start.png';
+	  logo.onload = function () {
+	    ctx.drawImage(logo, 220, 350);
+	  };
+	};
+	Game.prototype.lostLogo = function () {
+	  var logo = new Image();
+	  logo.src = './assets/images/lost.png';
+	  logo.onload = function () {
+	    ctx.drawImage(logo, 300, 200);
+	  };
 	};
 	
 	Game.prototype.inProgress = function () {
@@ -326,6 +359,11 @@
 	      y: e.clientY - rect.top
 	    };
 	  },
+	  sleep: function sleep(time) {
+	    return new Promise(function (resolve) {
+	      return setTimeout(resolve, time);
+	    });
+	  },
 	  fairRandom: function fairRandom(max, min) {
 	    var randomized = Math.random() * max;
 	    if (randomized < min) {
@@ -383,8 +421,9 @@
 	var blockLeftCenter = void 0;
 	var blockRightCenter = void 0;
 	
-	function Obstacle(gap, gapLocation, dy, height, color, m) {
+	function Obstacle(gap, gapLocation, dy, height, color, m, y) {
 	  this.gap = gap;
+	  this.y = y ? y : 0;
 	  this.gapLocation = gapLocation + gap > canvas.width ? canvas.width - gap : gapLocation;
 	
 	  if (this.gapLocation === 0) {
@@ -399,13 +438,13 @@
 	  }
 	
 	  if (blockLeftCenter || blockLeftCenter === 0) {
-	    this.blockLeft = new Block(blockLeftCenter, dy, this.gapLocation, height, color, m);
+	    this.blockLeft = new Block(blockLeftCenter, dy, this.gapLocation, height, color, m, this.y);
 	  }
 	
 	  if (blockRightCenter || blockRightCenter === 0) {
 	    this.blockRight = new Block(
 	    // blockRightCenter, dy, canvas.width - blockRightCenter, height
-	    canvas.width, dy, canvas.width - blockRightCenter, height, color, m, blockRightCenter);
+	    canvas.width, dy, canvas.width - blockRightCenter, height, color, m, this.y, blockRightCenter);
 	  }
 	}
 	
@@ -447,11 +486,11 @@
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext("2d");
 	var rect = canvas.getBoundingClientRect();
-	function Block(x, dy, w, h, color, m, tx) {
+	function Block(x, dy, w, h, color, m, y, tx) {
 	  // tx is target x
 	  // m is dx multiplier
 	  this.x = x;
-	  this.y = 0;
+	  this.y = y;
 	  this.dy = dy;
 	  this.w = w;
 	  this.h = h;
@@ -496,6 +535,61 @@
 	};
 	
 	module.exports = Block;
+
+/***/ },
+/* 5 */,
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var canvas = document.getElementById("myCanvas");
+	var ctx = canvas.getContext("2d");
+	var rect = canvas.getBoundingClientRect();
+	var Obstacle = __webpack_require__(3);
+	var Util = __webpack_require__(2);
+	
+	var colorsLength = Util.colors.length;
+	var colorsIdx = Math.floor(Math.random() * (colorsLength - 1));
+	var yCoord = 0;
+	
+	function MenuBlocks(num, speed, black) {
+	  this.height = canvas.height / num;
+	  this.color = Util.colors[colorsIdx % colorsLength];
+	  this.obstacles = [];
+	  if (black === true) {
+	    this.color = '#111111';
+	  }
+	  for (var i = 0; i < num; i++) {
+	    this.obstacles.push(new Obstacle(0, Util.fairRandom(canvas.width), 0, this.height, this.color, speed, yCoord));
+	    if (black === undefined) {
+	      colorsIdx += 1;
+	      this.color = Util.colors[colorsIdx % colorsLength];
+	    }
+	    yCoord += this.height;
+	  }
+	  this.done = false;
+	}
+	
+	MenuBlocks.prototype.draw = function () {
+	  var _this = this;
+	
+	  if (this.done === false) {
+	    this.obstacles.forEach(function (obs) {
+	      obs.draw();
+	    });
+	    if (this.obstacles[this.obstacles.length - 1].blockLeft.x === 0) {
+	      Util.sleep(50).then(function () {
+	        _this.done = true;
+	      });
+	    }
+	  }
+	};
+	
+	// Usage!
+	
+	
+	module.exports = MenuBlocks;
 
 /***/ }
 /******/ ]);
