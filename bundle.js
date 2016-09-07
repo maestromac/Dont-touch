@@ -61,14 +61,8 @@
 	var ballRadius = 8;
 	
 	var level = 1;
-	var difficulty = {
-	  gap: Util.fairRandom(0.23 * canvas.width, 0.23 * canvas.width),
-	  gapLocation: Util.fairRandom(canvas.width),
-	  dy: 0.7,
-	  height: Util.fairRandom(40, 40),
-	  color: Util.colors[colorsIdx % colorsLength],
-	  m: 7
-	};
+	var percent = 0.25;
+	var difficulty = void 0;
 	
 	var interval1 = void 0;
 	var interval2 = void 0;
@@ -76,6 +70,7 @@
 	var menuInterval = void 0;
 	var blackInterval = void 0;
 	var scoreInterval = void 0;
+	var highScore = void 0;
 	
 	var mouseClickListener = void 0;
 	var listenerCount = 0;
@@ -83,7 +78,7 @@
 	var menuCallback = void 0;
 	
 	function Game() {
-	  this.cursor = new Cursor(x, y, ballRadius, 40);
+	  this.cursor = new Cursor(x, y, ballRadius, 10);
 	  this.score = 0;
 	  this.status = "intro";
 	  this.obstacles = [];
@@ -92,37 +87,41 @@
 	}
 	
 	Game.prototype.generateObstacle = function () {
+	  this.raiseDifficulty();
 	  this.obstacles.push(new Obstacle(difficulty.gap, difficulty.gapLocation, difficulty.dy, difficulty.height, difficulty.color, difficulty.m));
 	  colorsIdx += 1;
-	  if (level < 10) {
-	    this.raiseDifficulty();
-	  } else {
-	    this.sustainDifficulty();
-	  }
+	  // if (level < 10) {
+	  // } else {
+	  //   this.sustainDifficulty();
+	  // }
 	  this.removeObstacle();
 	};
 	
 	Game.prototype.raiseDifficulty = function () {
+	  if (percent > 0.03) {
+	    percent -= 0.001;
+	  }
+	  console.log(percent);
 	  difficulty = {
-	    gap: Util.fairRandom(0.23 * canvas.width, 0.23 * canvas.width),
+	    gap: Util.fairRandom((percent + 0.3 * percent) * canvas.width, percent * canvas.width),
 	    gapLocation: Util.fairRandom(canvas.width),
-	    dy: 0.7,
+	    dy: 2.5,
 	    height: Util.fairRandom(40, 40),
-	    color: Util.colors[colorsIdx % colorsLength],
-	    m: 7
-	  };
-	};
-	
-	Game.prototype.sustainDifficulty = function () {
-	  difficulty = {
-	    gap: Util.fairRandom(0.15 * canvas.width, 70),
-	    gapLocation: Util.fairRandom(canvas.width),
-	    dy: 4,
-	    height: Util.fairRandom(150, 100),
 	    color: Util.colors[colorsIdx % colorsLength],
 	    m: 20
 	  };
 	};
+	
+	// Game.prototype.sustainDifficulty = function () {
+	//   difficulty = {
+	//     gap: Util.fairRandom(0.15 * canvas.width, 70),
+	//     gapLocation: Util.fairRandom(canvas.width),
+	//     dy: 2.5,
+	//     height: Util.fairRandom(150, 100),
+	//     color: Util.colors[colorsIdx % colorsLength],
+	//     m: 20
+	//   };
+	// };
 	
 	Game.prototype.removeObstacle = function () {
 	  var target = this.obstacles[0].inFrame() ? undefined : 0;
@@ -181,11 +180,28 @@
 	};
 	
 	Game.prototype.renderResult = function () {
+	  this.updateHighScore();
 	  this.scoreLogo(150, 150);
-	  ctx.font = "70px serif";
+	  this.bestLogo(185, 250);
+	  ctx.font = "bold 80px serif";
 	  ctx.fillStyle = "white";
 	  ctx.fillText(this.score, 580, 220);
-	  this.retryLogo();
+	  ctx.fillText(highScore, 580, 320);
+	  this.retryLogo(330, 450);
+	};
+	
+	Game.prototype.updateHighScore = function () {
+	  highScore = localStorage.getItem('highScore');
+	  if (highScore !== null) {
+	    if (this.score > highScore) {
+	      localStorage.setItem('highScore', this.score);
+	      highScore = this.score;
+	    }
+	  } else {
+	    localStorage.setItem('highScore', this.score);
+	    highScore = this.score;
+	  }
+	  return highScore;
 	};
 	
 	Game.prototype.drawMenuBlocks = function () {
@@ -219,16 +235,6 @@
 	
 	Game.prototype.renderMenu = function () {
 	  menuInterval = setInterval(this.drawMenuBlocks.bind(this), 2);
-	  // if (this.menuBlocks.done) {
-	  //
-	  // }
-	  // ctx.font = "Bold 70px San Serif";
-	  // ctx.fillStyle = "white";
-	  // ctx.font = "30px Arial";
-	  // ctx.fillText("How to play: ", 250, 220);
-	  // ctx.font = "25px Arial";
-	  // ctx.fillText("1: keep your cursor in the frame", 260, 260);
-	  // ctx.fillText("2: Avoid the falling bars", 260, 300);
 	};
 	
 	Game.prototype.logo = function () {
@@ -261,11 +267,19 @@
 	    ctx.drawImage(logo, 180, 100);
 	  };
 	};
-	Game.prototype.retryLogo = function () {
+	Game.prototype.retryLogo = function (xPos, yPos) {
 	  var logo = new Image();
 	  logo.src = './assets/images/retry.png';
 	  logo.onload = function () {
-	    ctx.drawImage(logo, 330, 350);
+	    ctx.drawImage(logo, xPos, yPos);
+	  };
+	};
+	
+	Game.prototype.bestLogo = function (xPos, yPos) {
+	  var logo = new Image();
+	  logo.src = './assets/images/best.png';
+	  logo.onload = function () {
+	    ctx.drawImage(logo, xPos, yPos);
 	  };
 	};
 	
@@ -279,7 +293,6 @@
 	  });
 	  this.cursor.draw();
 	
-	  // check for lose conditions
 	  if (this.cursor.outOfFrame()) {
 	    this.gameOver();
 	  }
@@ -289,21 +302,19 @@
 	    }
 	  });
 	
-	  // draw score last to maintain score on top
 	  this.drawScore();
 	};
 	
 	Game.prototype.start = function () {
 	  canvas.style.cursor = 'none';
 	  this.status = 'inProgress';
-	  interval1 = setInterval(this.generateObstacle.bind(this), 700);
-	  interval2 = setInterval(this.inProgress.bind(this), 2);
+	  interval1 = setInterval(this.generateObstacle.bind(this), 750);
+	  interval2 = setInterval(this.inProgress.bind(this), 15);
 	  interval3 = setInterval(this.tickScore.bind(this), 100);
 	};
 	
 	var game = new Game();
 	game.renderMenu();
-	// game.start();
 
 /***/ },
 /* 1 */
@@ -338,7 +349,7 @@
 	    var ratio = (i + 1) / this.positions.length;
 	    ctx.beginPath();
 	    ctx.arc(this.positions[i].x, this.positions[i].y, ratio * this.r, 0, Math.PI * 2);
-	    ctx.fillStyle = "rgba(181,18,18, " + 1 + ")";
+	    ctx.fillStyle = "rgba(181,18,18, " + ratio * this.r + ")";
 	    // ctx.fillStyle = Util.getRndColor(ratio/2);
 	    ctx.fill();
 	  }
