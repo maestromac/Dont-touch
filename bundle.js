@@ -60,7 +60,6 @@
 	var y = canvas.height / 2;
 	var ballRadius = 8;
 	
-	var level = 1;
 	var percent = 0.25;
 	var difficulty = void 0;
 	
@@ -90,10 +89,6 @@
 	  this.raiseDifficulty();
 	  this.obstacles.push(new Obstacle(difficulty.gap, difficulty.gapLocation, difficulty.dy, difficulty.height, difficulty.color, difficulty.m));
 	  colorsIdx += 1;
-	  // if (level < 10) {
-	  // } else {
-	  //   this.sustainDifficulty();
-	  // }
 	  this.removeObstacle();
 	};
 	
@@ -112,17 +107,6 @@
 	  };
 	};
 	
-	// Game.prototype.sustainDifficulty = function () {
-	//   difficulty = {
-	//     gap: Util.fairRandom(0.15 * canvas.width, 70),
-	//     gapLocation: Util.fairRandom(canvas.width),
-	//     dy: 2.5,
-	//     height: Util.fairRandom(150, 100),
-	//     color: Util.colors[colorsIdx % colorsLength],
-	//     m: 20
-	//   };
-	// };
-	
 	Game.prototype.removeObstacle = function () {
 	  var target = this.obstacles[0].inFrame() ? undefined : 0;
 	  if (target === 0) {
@@ -131,7 +115,6 @@
 	};
 	
 	Game.prototype.drawScore = function () {
-	  // ctx.font = "lighter 23px sans-serif";
 	  ctx.font = "small-caps bold 20px arial";
 	  ctx.fillStyle = "white";
 	  ctx.fillText("Score: " + this.score, 50, 50);
@@ -149,7 +132,6 @@
 	  clearInterval(interval1);
 	  clearInterval(interval2);
 	  clearInterval(interval3);
-	  // ctx.clearRect(0, 0, canvas.width, canvas.height);
 	  this.scoreBlocks = new MenuBlocks(13, 20);
 	  Util.sleep(450).then(function () {
 	    scoreInterval = setInterval(_this.drawScoreBlocks.bind(_this), 2);
@@ -341,7 +323,6 @@
 	  var pos = Util.getMousePos(rect, e);
 	  this.x = pos.x;
 	  this.y = pos.y;
-	  // console.log(`${this.x}, ${this.y}`);
 	};
 	
 	Cursor.prototype.draw = function () {
@@ -350,7 +331,6 @@
 	    ctx.beginPath();
 	    ctx.arc(this.positions[i].x, this.positions[i].y, ratio * this.r, 0, Math.PI * 2);
 	    ctx.fillStyle = "rgba(181,18,18, " + ratio * this.r + ")";
-	    // ctx.fillStyle = Util.getRndColor(ratio/2);
 	    ctx.fill();
 	  }
 	  ctx.beginPath();
@@ -358,9 +338,6 @@
 	  ctx.fillStyle = "rgb(181,18,18)";
 	  ctx.fill();
 	  ctx.closePath();
-	  // ctx.lineWidth = this.r/2;
-	  // ctx.strokeStyle = "#8000FF";
-	  // ctx.stroke();
 	  this.storeLastPosition(this.x, this.y);
 	};
 	
@@ -466,10 +443,8 @@
 	  if (this.gapLocation === 0) {
 	    blockRightCenter = this.gap;
 	  } else if (this.gapLocation === canvas.width) {
-	    // blockLeftCenter = 0;
 	    blockLeftCenter = 0 - this.gapLocation;
 	  } else {
-	    // blockLeftCenter = 0;
 	    blockLeftCenter = 0 - this.gapLocation;
 	    blockRightCenter = this.gap + this.gapLocation;
 	  }
@@ -479,9 +454,7 @@
 	  }
 	
 	  if (blockRightCenter || blockRightCenter === 0) {
-	    this.blockRight = new Block(
-	    // blockRightCenter, dy, canvas.width - blockRightCenter, height
-	    canvas.width, dy, canvas.width - blockRightCenter, height, color, m, this.y, blockRightCenter);
+	    this.blockRight = new Block(canvas.width, dy, canvas.width - blockRightCenter, height, color, m, this.y, blockRightCenter);
 	  }
 	}
 	
@@ -525,7 +498,7 @@
 	var rect = canvas.getBoundingClientRect();
 	function Block(x, dy, w, h, color, m, y, tx) {
 	  // tx is target x
-	  // m is dx multiplier
+	  // m  is dx multiplier
 	  this.x = x;
 	  this.y = y;
 	  this.dy = dy;
@@ -561,7 +534,6 @@
 	  } else {
 	    ctx.rect(this.x, this.y, this.w, this.h);
 	    ctx.fillStyle = this.color;
-	    // ctx.fillStyle = "#00FFFF";
 	    ctx.fill();
 	    ctx.closePath();
 	    this.y += this.dy;
@@ -621,9 +593,6 @@
 	    }
 	  }
 	};
-	
-	// Usage!
-	
 	
 	module.exports = MenuBlocks;
 
