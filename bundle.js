@@ -96,7 +96,6 @@
 	  if (percent > 0.03) {
 	    percent -= 0.001;
 	  }
-	  console.log(percent);
 	  difficulty = {
 	    gap: Util.fairRandom((percent + 0.3 * percent) * canvas.width, percent * canvas.width),
 	    gapLocation: Util.fairRandom(canvas.width),
@@ -144,9 +143,12 @@
 	  if (xRetry && yRetry) {
 	    canvas.removeEventListener("click", retryCallback);
 	    this.blackBlocks = new MenuBlocks(13, 10, true);
-	    this.cursor = new Cursor(x, y, ballRadius, 40);
+	    //reset game conditions
+	    this.cursor = new Cursor(x, y, ballRadius, 10);
 	    this.score = 0;
 	    this.obstacles = [];
+	    percent = 0.25;
+	    //
 	    blackInterval = setInterval(this.drawBlackBlocks.bind(this), 2);
 	  }
 	};
@@ -497,7 +499,7 @@
 	var ctx = canvas.getContext("2d");
 	var rect = canvas.getBoundingClientRect();
 	function Block(x, dy, w, h, color, m, y, tx) {
-	  // tx is target x
+	  // tx is target x for blocks on the right side
 	  // m  is dx multiplier
 	  this.x = x;
 	  this.y = y;
