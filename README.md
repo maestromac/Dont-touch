@@ -1,6 +1,7 @@
 # Don't touch!
 [Live](https://maestromac.github.io/Dont-touch/)
 
+![Image of Yaktocat](docs/views/main.png)
 ## About
 
 "Don't Touch" is a simple and addictive cursor-avoidance game. You maintain your cursor within the frame and avoid incoming blocks. Each blocks are randomly generated.
